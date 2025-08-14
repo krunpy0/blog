@@ -1,0 +1,23 @@
+.welcome {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.welcome button {
+  padding: 0.5rem 1rem;
+  font-weight: 550;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.3rem;
+}
+.welcome button:hover {
+  opacity: 0.9;
+}
+.welcome button:active {
+  opacity: 0.8;
+}
+.creatorPrompt {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

@@ -1,34 +1,33 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+// import { useEffect, useState } from "react";
+import styles from "./App.module.css";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../authContext.jsx";
 function App() {
-  const [userData, setUserData] = useState(null);
-  async function fetchData() {
-    try {
-      const res = await fetch("http://localhost:3000/me", {
-        credentials: "include",
-      });
-      if (!res.ok) {
-        return setUserData(false);
-      }
-      const result = await res.json();
-      console.log(result);
-      setUserData(result);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  if (userData == null) return <>Loading...</>;
-
+  const { userData, loading, fetchUser } = useAuth();
+  if (loading) return <>Loading...</>;
   return (
     <>
       <div>
         {userData ? (
-          <h1>Hello, {userData.username}</h1>
+          <>
+            <div className={styles.welcome}>
+              <h1>Hello, {userData.username}</h1>
+              <div>
+                <button
+                  onClick={async () => {
+                    const res = await fetch("http://localhost:3000/logout", {
+                      credentials: "include",
+                    });
+                    if (res.ok) {
+                      return fetchUser();
+                    }
+                  }}
+                >
+                  Log out
+                </button>
+              </div>
+            </div>
+          </>
         ) : (
           <h1>
             Seems that you don't have an account. You need to{" "}
@@ -36,11 +35,13 @@ function App() {
           </h1>
         )}
         {userData && userData.creator && (
-          <>
-            <h2>You are creator!</h2> <Link to={"edit"}>Edit</Link>
-          </>
+          <div className={styles.creatorPrompt}>
+            <h2>You are creator!</h2>{" "}
+            <Link to={"edit"} style={{ color: "white" }}>
+              Create new post
+            </Link>
+          </div>
         )}
-        <a href="http://localhost:3000/logout">Log out</a>
       </div>
     </>
   );

@@ -2,17 +2,24 @@ import styles from "../SignUp/SignUp.module.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { checkUser } from "../../api";
+import { useAuth } from "../../authContext.jsx";
+// import { useEffect } from "react";
 export function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [resultStatus, setResultStatus] = useState(null);
   const [result, setResult] = useState(null);
+  const { userData, loading, fetchUser } = useAuth();
+  if (loading) return <p>Loading...</p>;
+
   async function handleSubmit(e) {
     e.preventDefault();
-    const user = await checkUser();
-    if (user) return navigate("/");
+    if (userData) {
+      console.log("I HAVE USERDATA");
+      navigate("/");
+      return;
+    }
     setResult(null);
     setResultStatus(null);
     const res = await fetch("http://localhost:3000/login", {
@@ -26,7 +33,10 @@ export function Login() {
     const result = await res.json(res);
     setResult(result.message);
     setResultStatus(res.ok);
-    if (res.ok) navigate("/");
+    if (res.ok) {
+      fetchUser();
+      navigate("/");
+    }
   }
 
   return (

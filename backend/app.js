@@ -47,6 +47,10 @@ app.post("/sign-up", async (req, res) => {
   res.status(201).json({ message: "Signed in succesfully" });
 });
 
+app.post("/test", (req, res) => {
+  console.log(req.body);
+  res.json({ message: req.body });
+});
 app.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -84,6 +88,29 @@ app.post("/login", async (req, res) => {
 app.get("/logout", (req, res) => {
   res.clearCookie("token").json({ message: "Logged out" });
 });
+// BLOG POSTS MANAGMENT
+
+app.get("/posts", (req, res) => {});
+
+app.post(
+  "/post",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    if (!req.user || !req.user.creator)
+      return res.status(403).json({ message: "Forbidden" });
+    console.log(req.user);
+    console.log(req.body);
+    const newPost = await prisma.post.create({
+      data: {
+        title: req.body.title,
+        text: req.body.value,
+        userId: req.user.id,
+      },
+    });
+    console.log(newPost);
+    res.send(200);
+  }
+);
 
 module.exports = prisma;
 
