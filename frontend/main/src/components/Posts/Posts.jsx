@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
 import styles from "./Posts.module.css";
 import { LikeIcon, CommentIcon } from "./Icons";
 import { Post } from "./Post";
+//import { useContext } from "react";
+import { usePosts } from "../../Context";
 export function Posts() {
-  const [posts, setPosts] = useState(null);
+  /* const [posts, setPosts] = useState(null);
   //const [likedPosts, setLikedPosts] = useState(null);
   async function fetchPosts() {
     try {
@@ -32,8 +34,14 @@ export function Posts() {
 
   useEffect(() => {
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  */
 
+  const { posts, fetchPosts } = usePosts();
+  useEffect(() => {
+    if (!posts) fetchPosts();
+  }, []);
   async function likePost(id) {
     try {
       const res = await fetch(`http://localhost:3000/posts/${id}/like`, {
@@ -53,7 +61,7 @@ export function Posts() {
   if (posts === false) return <h3>Error loading posts</h3>;
   return (
     <div className={styles.postContainer}>
-      {posts?.map((post) => (
+      {posts.map((post) => (
         <Post post={post} styles={styles} likePost={likePost} key={post.id} />
       ))}
     </div>

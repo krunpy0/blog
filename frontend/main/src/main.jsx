@@ -8,6 +8,7 @@ import { Login } from "./components/Login/Login.jsx";
 import { EditTest } from "./components/Editor/NewPost/NewPost.jsx";
 import { AuthProvider } from "./authContext.jsx";
 import { ViewPost } from "./components/Posts/ViewPost.jsx";
+import { PostsProvider } from "./Context.jsx";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <PostsProvider>
+        <RouterProvider router={router} />
+      </PostsProvider>
     </AuthProvider>
   </StrictMode>
 );

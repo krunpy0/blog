@@ -2,16 +2,24 @@ import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
 import { LikeIcon, CommentIcon } from "./Icons";
 import { useState } from "react";
-
+import dayjs from "dayjs";
+dayjs.locale("en");
 export function Post({ post, styles, likePost }) {
-  const [liked, setLiked] = useState(post.likes.length > 0 ? true : false);
+  const [liked, setLiked] = useState(post.likes?.length > 0 ? true : false);
   const [count, setCount] = useState(post._count.likes);
+  console.log(post);
   return (
     <>
       <div className={styles.post} key={post.id}>
         <div className={styles.postInfo}>
           <h1>{post.title}</h1>
-          <p> By {post.author.username}</p>
+          <p>
+            {" "}
+            By {post.author.username}.{" "}
+            <span style={{ color: "rgba(98, 98, 98, 1)" }}>
+              Created at {dayjs(post.createdAt).format("DD.MM.YYYY")}
+            </span>
+          </p>
         </div>
         <MDEditor.Markdown
           source={post.text.substring(0, 100)}
@@ -38,7 +46,7 @@ export function Post({ post, styles, likePost }) {
               <button onClick={() => {}}>
                 <CommentIcon />
               </button>
-              <p>0</p>
+              <p>{post.comments.length}</p>
             </div>
           </div>
         </div>

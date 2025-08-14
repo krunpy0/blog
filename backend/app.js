@@ -115,7 +115,12 @@ app.get("/posts", optionalAuth, async (req, res) => {
           likes: { where: { userId: currentUserId } },
         }),
 
-        comments: true,
+        comments: {
+          select: {
+            user: true,
+            userId: true,
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -131,8 +136,37 @@ app.get("/posts/:id", async (req, res) => {
   try {
     const post = await prisma.post.findUnique({
       where: { id: req.params.id },
-      include: { likes: true, comments: true },
+      include: {
+        likes: {
+          select: {
+            id: true,
+            userId: true,
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            text: true,
+            createdAt: true,
+            user: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
+        author: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
     });
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
     console.log(post);
     res.status(200).json(post);
   } catch (err) {
@@ -184,6 +218,25 @@ app.post(
     });
     console.log(like);
     return res.json({ liked: true });
+  }
+);
+
+app.post(
+  "/posts/:id/comment",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const postId = req.params.id;
+    const userId = req.user.id;
+    try {
+      const comment = await prisma.comment.create({
+        data: { postId, userId, text: req.body.comment },
+      });
+      console.log(comment);
+      res.status(200).json({ comment });
+    } catch (err) {
+      console.log(err);
+      res.status(500);
+    }
   }
 );
 

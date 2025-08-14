@@ -1,0 +1,53 @@
+.postWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 700px;
+  width: 90%;
+  background-color: #151515;
+  border: 1px solid rgb(56, 56, 56);
+  border-radius: 1rem;
+  padding: 24px 16px;
+}
+.container hr {
+  width: 100%;
+  opacity: 0.3;
+}
+.upperWrapper p {
+  margin: 5px 0 0 0;
+  color: #a6a6a6;
+  font-size: 0.9rem;
+}
+.commentsPrompt {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.commentsPrompt input {
+  background-color: #141414;
+  color: white;
+  border: 1px solid rgb(56, 56, 56);
+  border-radius: 0.5rem;
+  height: 2.5rem;
+  padding-left: 12px;
+}
+.commentsPrompt button {
+  width: 100px;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background-color: white;
+  border: none;
+  color: black;
+  font-weight: 525;
+  font-size: 1rem;
+}
+.commentsPrompt button:disabled {
+  opacity: 0.5;
+}
