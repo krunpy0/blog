@@ -1,14 +1,14 @@
-import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./NewPost.module.css";
 import MDEditor from "@uiw/react-md-editor";
 import { useAuth } from "../../../authContext";
+import { useNavigate } from "react-router-dom";
 export function EditTest() {
   const [value, setValue] = useState("**Hello world!**");
   const [title, setTitle] = useState("");
   const { userData } = useAuth();
-
+  const navigate = useNavigate();
   if (userData === null) return <div>Loading...</div>;
   if (userData.creator === false)
     return (
@@ -27,7 +27,10 @@ export function EditTest() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, value }),
     });
-    if (res.ok) console.log("OK");
+    if (res.ok) {
+      console.log("OK");
+      navigate("/");
+    }
   }
   return (
     <div className={styles.container}>

@@ -48,7 +48,7 @@ function App() {
           </div>
         )}
       </div>
-      <Posts />
+      <Posts userData={userData} />
     </>
   );
 }

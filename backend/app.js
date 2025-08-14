@@ -167,13 +167,57 @@ app.get("/posts/:id", async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    console.log(post);
     res.status(200).json(post);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+app.put(
+  "/posts/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const postId = req.params.id;
+    const { id, username, creator } = req.user;
+    if (!creator)
+      return res.status(403).json({ message: "FUCKING FORBIDDEN!" });
+    try {
+      const post = await prisma.post.update({
+        where: { id: postId },
+        data: { title: req.body.title, text: req.body.value },
+      });
+      console.log(post);
+      res.status(200).json({ message: "OK" });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  }
+);
+
+app.delete(
+  "/posts/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const postId = req.params.id;
+    const { id, username, creator } = req.user;
+    if (!creator)
+      return res.status(500).json({ message: "You are not an admin" });
+    console.log(postId);
+    console.log(creator);
+    try {
+      const post = await prisma.post.delete({
+        where: { id: postId },
+      });
+      console.log(post);
+      return res.status(200).json({ message: "Ok" });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error" });
+    }
+  }
+);
 
 app.post(
   "/post",
@@ -233,6 +277,32 @@ app.post(
       });
       console.log(comment);
       res.status(200).json({ comment });
+    } catch (err) {
+      console.log(err);
+      res.status(500);
+    }
+  }
+);
+
+app.delete(
+  "/posts/:id/comment/:commentId/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const postId = req.params.id;
+    const commentId = req.params.commentId;
+    const userId = req.user.id;
+    try {
+      const comment = await prisma.comment.findUnique({
+        where: { id: commentId, userId },
+      });
+      if (!comment) return res.status(404);
+      const deleted = await prisma.comment.delete({
+        where: { id: commentId, userId },
+      });
+      if (!deleted) return res.status(404);
+      console.log(deleted);
+
+      return res.send(204).json({ message: "Deleted" });
     } catch (err) {
       console.log(err);
       res.status(500);

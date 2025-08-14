@@ -6,7 +6,8 @@ import { LikeIcon, CommentIcon } from "./Icons";
 import { Post } from "./Post";
 //import { useContext } from "react";
 import { usePosts } from "../../Context";
-export function Posts() {
+// import { useAuth } from "../../authContext";
+export function Posts({ userData }) {
   /* const [posts, setPosts] = useState(null);
   //const [likedPosts, setLikedPosts] = useState(null);
   async function fetchPosts() {
@@ -37,7 +38,7 @@ export function Posts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   */
-
+  //const {userData, fetchUser} = useAuth();
   const { posts, fetchPosts } = usePosts();
   useEffect(() => {
     if (!posts) fetchPosts();
@@ -62,7 +63,14 @@ export function Posts() {
   return (
     <div className={styles.postContainer}>
       {posts.map((post) => (
-        <Post post={post} styles={styles} likePost={likePost} key={post.id} />
+        <Post
+          post={post}
+          styles={styles}
+          likePost={likePost}
+          key={post.id}
+          fetchPosts={fetchPosts}
+          userData={userData}
+        />
       ))}
     </div>
   );

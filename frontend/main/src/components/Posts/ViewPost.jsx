@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useAuth } from "../../authContext";
+import { useNavigate } from "react-router-dom";
 dayjs.locale("en");
 import styles from "./ViewPost.module.css";
 import { Comment } from "./Comment";
@@ -13,6 +14,7 @@ export function ViewPost() {
   const { userData } = useAuth();
   console.log(userData);
   const [comment, setComment] = useState("");
+  const navigate = useNavigate();
   const { id } = useParams();
   console.log(id);
   const [post, setPost] = useState(null);
@@ -31,8 +33,32 @@ export function ViewPost() {
       setPost(false);
     }
   }
+
+  async function deletePost(id) {
+    let userPrompt = confirm("Are you sure?");
+    if (!userPrompt) {
+      return alert("Canceled");
+    }
+    try {
+      const res = await fetch(`http://localhost:3000/posts/${id}`, {
+        credentials: "include",
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        return alert(res.status);
+      }
+      const response = await res.json();
+      console.log(response);
+      navigate("/");
+    } catch (err) {
+      alert("Error deleting");
+      console.log(err);
+    }
+  }
+
   async function sendComment() {
     try {
+      setComment("");
       const res = await fetch(`http://localhost:3000/posts/${id}/comment`, {
         credentials: "include",
         method: "POST",
@@ -47,6 +73,7 @@ export function ViewPost() {
       console.log(err);
     }
   }
+
   useEffect(() => {
     fetchPost();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,9 +91,29 @@ export function ViewPost() {
               <p>
                 By {post.author.username}.{" "}
                 <span style={{ color: "rgba(98, 98, 98, 1)" }}>
-                  Created at {dayjs(post.createdAt).format("DD.MM.YYYY")}
+                  Created at{" "}
+                  {dayjs(post.createdAt).format("DD/MM/YYYY HH:MM:ss")}
                 </span>
               </p>
+              <div className={styles.links}>
+                {userData?.creator && (
+                  <>
+                    <Link to={`/edit/${post.id}`} style={{ color: "white" }}>
+                      Edit post
+                    </Link>
+                    <button
+                      onClick={() => {
+                        deletePost(id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+                <Link to={"/"} style={{ color: "white" }}>
+                  Back
+                </Link>
+              </div>
               <hr />
             </div>
             <MDEditor.Markdown
@@ -114,9 +161,15 @@ export function ViewPost() {
                   </p>
                 )}
               </div>
-              {post.comments?.map((comment) => (
-                <Comment comment={comment} />
-              ))}
+              <div className={styles.commentWrapper}>
+                {post.comments?.map((comment) => (
+                  <Comment
+                    comment={comment}
+                    postId={id}
+                    fetchPost={fetchPost}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

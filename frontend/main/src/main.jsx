@@ -9,6 +9,7 @@ import { EditTest } from "./components/Editor/NewPost/NewPost.jsx";
 import { AuthProvider } from "./authContext.jsx";
 import { ViewPost } from "./components/Posts/ViewPost.jsx";
 import { PostsProvider } from "./Context.jsx";
+import { EditPost } from "./components/Editor/EditPost/EditPost.jsx";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: "/edit",
     element: <EditTest />,
+  },
+  {
+    path: "/edit/:id",
+    element: <EditPost />,
   },
   {
     path: "/posts/:id",

@@ -9,11 +9,11 @@
   flex-direction: column;
   gap: 20px;
   max-width: 700px;
-  width: 90%;
+  width: 80%;
   background-color: #151515;
   border: 1px solid rgb(56, 56, 56);
   border-radius: 1rem;
-  padding: 24px 16px;
+  padding: 24px 32px;
 }
 .container hr {
   width: 100%;
@@ -29,7 +29,20 @@
   flex-direction: column;
   gap: 7px;
 }
-
+.links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.links button {
+  border: none;
+  color: rgb(255, 124, 124);
+  background: none;
+  font-size: 1rem;
+  padding: 0.2rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
 .commentsPrompt input {
   background-color: #141414;
   color: white;
@@ -50,4 +63,9 @@
 }
 .commentsPrompt button:disabled {
   opacity: 0.5;
+}
+.commentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }

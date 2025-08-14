@@ -42,7 +42,7 @@ model Comment {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Post      Post     @relation(fields: [postId], references: [id])
+  Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
   user      User     @relation(fields: [userId], references: [id])
   text      String
@@ -51,7 +51,7 @@ model Comment {
 
 model Like {
   id     String  @id @default(uuid())
-  Post   Post?   @relation(fields: [postId], references: [id])
+  Post   Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId String?
   user   User    @relation(fields: [userId], references: [id])
   userId String
