@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
+import { Link } from "react-router-dom";
 export function Posts() {
   const [posts, setPosts] = useState(null);
   async function fetchPosts() {
@@ -20,23 +21,26 @@ export function Posts() {
     fetchPosts();
   }, []);
 
-  if (posts == null) return <h3>Loading posts...</h3>;
-  if (posts == false) return <h3>Error loading posts</h3>;
+  if (posts === null) return <h3>Loading posts...</h3>;
+  if (posts === false) return <h3>Error loading posts</h3>;
   return (
     <>
       <div>
         {posts.map((post) => (
-          <>
+          <div key={post.id}>
             <h1>{post.title}</h1>
             <p>
               {" "}
               <strong>{post.author.username}</strong>
             </p>
             <MDEditor.Markdown
-              source={post.text}
-              style={{ whiteSpace: "pre-wrap" }}
+              source={post.text.substring(0, 100)}
+              style={{ whiteSpace: "pre-wrap", maxWidth: "300px" }}
             />
-          </>
+            <Link to={`/posts/${post.id}`} style={{ color: "white" }}>
+              Go to post
+            </Link>
+          </div>
         ))}
       </div>
     </>

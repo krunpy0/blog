@@ -108,6 +108,19 @@ app.get("/posts", async (req, res) => {
   }
 });
 
+app.get("/posts/:id", async (req, res) => {
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: req.params.id },
+    });
+    console.log(post);
+    res.status(200).json(post);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.post(
   "/post",
   passport.authenticate("jwt", { session: false }),
