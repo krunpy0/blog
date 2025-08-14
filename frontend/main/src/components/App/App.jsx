@@ -6,10 +6,11 @@ import { Posts } from "../Posts/Posts.jsx";
 
 function App() {
   const { userData, loading, fetchUser } = useAuth();
+  console.log(userData);
   if (loading) return <>Loading...</>;
   return (
     <>
-      <div>
+      <div className={styles.wrapper}>
         {userData ? (
           <>
             <div className={styles.welcome}>
@@ -32,8 +33,10 @@ function App() {
           </>
         ) : (
           <h1>
-            Seems that you don't have an account. You need to{" "}
-            <Link to={"/login"}>log in</Link> to see the posts.
+            Seems that you don't have an account.{" "}
+            <Link to={"/login"} style={{ color: "white" }}>
+              Log in
+            </Link>
           </h1>
         )}
         {userData && userData.creator && (
@@ -44,8 +47,8 @@ function App() {
             </Link>
           </div>
         )}
-        <Posts />
       </div>
+      <Posts />
     </>
   );
 }

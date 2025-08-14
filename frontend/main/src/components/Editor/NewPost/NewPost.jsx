@@ -8,8 +8,9 @@ export function EditTest() {
   const [value, setValue] = useState("**Hello world!**");
   const [title, setTitle] = useState("");
   const { userData } = useAuth();
+
   if (userData === null) return <div>Loading...</div>;
-  if (userData === false)
+  if (userData.creator === false)
     return (
       <>
         <div>You are not allowed</div>

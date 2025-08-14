@@ -7,7 +7,7 @@ import { SignUp } from "./components/SignUp/SignUp.jsx";
 import { Login } from "./components/Login/Login.jsx";
 import { EditTest } from "./components/Editor/NewPost/NewPost.jsx";
 import { AuthProvider } from "./authContext.jsx";
-import { Post } from "./components/Posts/Post.jsx";
+import { ViewPost } from "./components/Posts/ViewPost.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/posts/:id",
-    element: <Post />,
+    element: <ViewPost />,
   },
 ]);
 

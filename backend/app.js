@@ -19,6 +19,14 @@ app.use(
   })
 );
 
+const optionalAuth = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err) return next(err);
+    if (user) req.user = user;
+    next();
+  })(req, res, next);
+};
+
 app.get(
   "/me",
   passport.authenticate("jwt", { session: false }),
@@ -90,17 +98,28 @@ app.get("/logout", (req, res) => {
 });
 // BLOG POSTS MANAGMENT
 
-app.get("/posts", async (req, res) => {
+app.get("/posts", optionalAuth, async (req, res) => {
+  console.log(req.user);
+  const currentUserId = req.user?.id || null;
   try {
     const posts = await prisma.post.findMany({
       include: {
         author: {
           select: {
             username: true,
+            id: true,
           },
         },
+        _count: { select: { likes: true } },
+        ...(currentUserId && {
+          likes: { where: { userId: currentUserId } },
+        }),
+
+        comments: true,
       },
+      orderBy: { createdAt: "desc" },
     });
+    console.log(posts);
     res.status(200).json({ posts });
   } catch (err) {
     console.log(err);
@@ -112,6 +131,7 @@ app.get("/posts/:id", async (req, res) => {
   try {
     const post = await prisma.post.findUnique({
       where: { id: req.params.id },
+      include: { likes: true, comments: true },
     });
     console.log(post);
     res.status(200).json(post);
@@ -138,6 +158,32 @@ app.post(
     });
     console.log(newPost);
     res.send(200);
+  }
+);
+
+app.post(
+  "/posts/:id/like",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const userId = req.user.id;
+    const postId = req.params.id;
+
+    const existingLike = await prisma.like.findUnique({
+      where: { postId_userId: { postId, userId } },
+    });
+
+    if (existingLike) {
+      const like = await prisma.like.delete({
+        where: { postId_userId: { postId, userId } },
+      });
+      console.log(like);
+      return res.json({ liked: false });
+    }
+    const like = await prisma.like.create({
+      data: { postId, userId },
+    });
+    console.log(like);
+    return res.json({ liked: true });
   }
 );
 
