@@ -90,7 +90,23 @@ app.get("/logout", (req, res) => {
 });
 // BLOG POSTS MANAGMENT
 
-app.get("/posts", (req, res) => {});
+app.get("/posts", async (req, res) => {
+  try {
+    const posts = await prisma.post.findMany({
+      include: {
+        author: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+    res.status(200).json({ posts });
+  } catch (err) {
+    console.log(err);
+    res.send(500).json({ message: "Internal server error" });
+  }
+});
 
 app.post(
   "/post",

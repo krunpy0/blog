@@ -2,6 +2,8 @@
 import styles from "./App.module.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../authContext.jsx";
+import { Posts } from "../Posts/Posts.jsx";
+
 function App() {
   const { userData, loading, fetchUser } = useAuth();
   if (loading) return <>Loading...</>;
@@ -42,6 +44,7 @@ function App() {
             </Link>
           </div>
         )}
+        <Posts />
       </div>
     </>
   );
